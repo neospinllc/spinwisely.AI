@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { adminAuth } from '@/lib/firebase-admin'
 
+export const runtime = 'nodejs'
+
 export async function POST(request) {
     try {
         const { email } = await request.json()

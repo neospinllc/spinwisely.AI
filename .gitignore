@@ -41,3 +41,4 @@ wrangler.toml
 # uploads
 /uploads
 /temp
+cloudflare-env-vars.txt
