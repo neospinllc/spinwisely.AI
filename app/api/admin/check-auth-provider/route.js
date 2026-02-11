@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { adminAuth } from '@/lib/firebase-admin'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 export async function POST(request) {
     try {

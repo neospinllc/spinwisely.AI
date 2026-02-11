@@ -4,6 +4,9 @@ import { generateEmbeddingsBatch } from '@/lib/llm-client'
 import { upsertVectors } from '@/lib/vector-store'
 import { saveDocumentMetadata } from '@/lib/firestore'
 
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 export async function POST(request) {
     try {
         console.log('=== Upload API called ===')
