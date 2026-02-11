@@ -9,7 +9,7 @@ export default function ChatPage() {
     const router = useRouter()
     const { user, userData, signOut, loading } = useAuth()
     const [showVerificationMessage, setShowVerificationMessage] = useState(false)
-    const [resendingVerification, setResending Verification] = useState(false)
+    const [resendingVerification, setResendingVerification] = useState(false)
 
     const [messages, setMessages] = useState([
         {
