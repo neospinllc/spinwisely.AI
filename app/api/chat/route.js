@@ -38,7 +38,7 @@ export async function POST(request) {
         // Search for relevant document chunks in the vector database
         console.log('🔍 Searching Pinecone with embedding of length:', embeddingResult.embedding.length)
         const searchResult = await queryVectors(embeddingResult.embedding, {
-            topK: 5,
+            topK: 10,
             includeMetadata: true,
         })
 
@@ -49,7 +49,8 @@ export async function POST(request) {
         })
 
         if (searchResult.matches && searchResult.matches.length > 0) {
-            console.log('✅ First match score:', searchResult.matches[0].score)
+            console.log('✅ Match scores:', searchResult.matches.slice(0, 3).map(m => m.score))
+            console.log('📄 First chunk preview:', searchResult.matches[0].metadata?.text?.substring(0, 150))
         }
 
         if (!searchResult.success || searchResult.matches.length === 0) {
@@ -63,34 +64,37 @@ export async function POST(request) {
         const context = searchResult.matches
             .map((match) => match.metadata?.text || '')
             .filter(text => text.length > 0)
-            .join('\n\n')
+            .join('\n\n---\n\n')
 
         // Build the prompt with context (no source attribution)
-        const prompt = `Context information:
+        const prompt = `Context information from knowledge base:
 ${context}
 
 User question: ${message}
 
-Based on the context above, provide a helpful answer. IMPORTANT: Rephrase and simplify the information - do not copy text verbatim from the context.`
+Provide a detailed, specific answer based ONLY on the context above. Include concrete details, steps, techniques, or recommendations mentioned in the context.`
 
         // Generate response using LLM with enhanced privacy system prompt
         const aiResponse = await generateChatResponse(prompt, {
-            systemPrompt: `You are a knowledgeable AI assistant. Follow these CRITICAL rules:
+            systemPrompt: `You are an expert AI assistant for fiber to yarn technology and processes. Follow these rules:
 
-PRIVACY & SECURITY:
+CONTENT RULES:
+- Answer ONLY based on the provided context
+- Include specific details, techniques, parameters, and steps from the context
+- If the context mentions specific methods, equipment, or processes, explain them
+- Be thorough and technical when the context provides technical information
+- If the context lacks information to answer fully, say "The available information covers [what you know] but doesn't include [what's missing]"
+
+PRIVACY RULES:
 - NEVER mention document names, filenames, or sources
-- NEVER reveal how many documents are in the database
-- NEVER reference "the document says" or "according to the source"
-- NEVER copy text verbatim from the context
+- NEVER say "according to the document" or "the source states"
+- Present information naturally as your own knowledge
 
 RESPONSE STYLE:
-- Synthesize and rephrase information in your own words
-- Simplify complex information for clarity
-- Present information as your own knowledge
-- Be natural and conversational
-- If you don't know something from the context, say "I don't have information about that topic"
-
-Answer questions based strictly on the provided context, but always rephrase and simplify the information naturally.`,
+- Be specific and detailed, not generic
+- Use technical terms when appropriate
+- Organize information clearly (use lists or steps when helpful)
+- Rephrase naturally but preserve important details and specifics`,
         })
 
         if (!aiResponse.success) {
