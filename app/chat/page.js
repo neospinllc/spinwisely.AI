@@ -14,7 +14,7 @@ export default function ChatPage() {
     const [messages, setMessages] = useState([
         {
             role: 'assistant',
-            content: 'Hello! I\'m your AI assistant. Ask me anything about the industry-credible documents in our knowledge base.',
+            content: 'Hello! I\'m your AI assistant. Ask me anything about the Fiber to Yarn technology and process, Happy to assist you!',
             timestamp: new Date()
         }
     ])
@@ -142,7 +142,7 @@ export default function ChatPage() {
                         <h1 className="text-xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
                             SpinWisely AI
                         </h1>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Industry Knowledge Assistant</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Fiber to Yarn Knowledge Assistant</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-4">
