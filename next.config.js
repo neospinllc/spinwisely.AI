@@ -3,10 +3,9 @@ const nextConfig = {
     reactStrictMode: true,
     swcMinify: true,
 
-    // For Cloudflare Pages deployment
-    output: 'export',
-    images: {
-        unoptimized: true,
+    // Environment variables
+    env: {
+        NEXT_PUBLIC_APP_NAME: 'SpinWisely AI',
     },
 
     // Webpack configuration for Node.js modules in browser
@@ -17,15 +16,9 @@ const nextConfig = {
                 fs: false,
                 net: false,
                 tls: false,
-                crypto: false,
-            };
+            }
         }
-        return config;
-    },
-
-    // Environment variables
-    env: {
-        NEXT_PUBLIC_APP_NAME: 'SpinWisely AI',
+        return config
     },
 }
 

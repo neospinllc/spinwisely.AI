@@ -1,18 +1,57 @@
 'use client'
 
-import { useState } from 'react'
-import { MessageCircle, Lock, Mail, Sparkles } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { MessageCircle, Lock, Mail, Sparkles, Loader2 } from 'lucide-react'
+import { useAuth } from '@/lib/auth-context'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
+    const router = useRouter()
+    const { user, loading, signIn, signUp } = useAuth()
     const [isLogin, setIsLogin] = useState(true)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [name, setName] = useState('')
+    const [error, setError] = useState('')
+    const [submitting, setSubmitting] = useState(false)
 
-    const handleSubmit = (e) => {
+    // Redirect if already logged in
+    useEffect(() => {
+        if (user && !loading) {
+            router.push('/chat')
+        }
+    }, [user, loading, router])
+
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        // TODO: Implement authentication
-        console.log('Form submitted', { email, password, name })
+        setError('')
+        setSubmitting(true)
+
+        try {
+            let result
+            if (isLogin) {
+                result = await signIn(email, password)
+            } else {
+                result = await signUp(email, password, name)
+            }
+
+            if (!result.success) {
+                setError(result.error)
+            }
+            // Success - useEffect will redirect
+        } catch (err) {
+            setError(err.message)
+        } finally {
+            setSubmitting(false)
+        }
+    }
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 flex items-center justify-center">
+                <Loader2 className="w-12 h-12 text-primary-600 animate-spin" />
+            </div>
+        )
     }
 
     return (
@@ -81,6 +120,12 @@ export default function Home() {
                                 </p>
                             </div>
 
+                            {error && (
+                                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
+                                    <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                                </div>
+                            )}
+
                             <form onSubmit={handleSubmit} className="space-y-5">
                                 {!isLogin && (
                                     <div>
@@ -130,9 +175,11 @@ export default function Home() {
 
                                 <button
                                     type="submit"
-                                    className="w-full py-3 px-4 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                                    disabled={submitting}
+                                    className="w-full py-3 px-4 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
                                 >
-                                    {isLogin ? 'Sign In' : 'Create Account'}
+                                    {submitting && <Loader2 className="w-5 h-5 animate-spin" />}
+                                    {submitting ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
                                 </button>
                             </form>
 
