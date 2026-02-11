@@ -59,7 +59,7 @@ export default function Home() {
             {/* Header */}
             <header className="absolute top-0 left-0 right-0 p-6">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 md:ml-12">
                         <MessageCircle className="w-10 h-10 text-primary-600" />
                         <span className="text-5xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
                             SpinWisely AI
@@ -72,7 +72,7 @@ export default function Home() {
             <main className="flex min-h-screen items-center justify-center p-4">
                 <div className="w-full max-w-6xl grid md:grid-cols-2 gap-8 items-center">
                     {/* Left Side - Hero */}
-                    <div className="text-center md:text-left space-y-6 animate-fade-in md:ml-24">
+                    <div className="text-center md:text-left space-y-6 animate-fade-in md:ml-12">
                         <div className="flex items-center gap-2 justify-center md:justify-start">
                             <Sparkles className="w-6 h-6 text-accent-500" />
                             <span className="text-sm font-semibold text-accent-600 uppercase tracking-wider">
