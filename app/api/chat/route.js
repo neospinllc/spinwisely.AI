@@ -72,10 +72,10 @@ ${context}
 
 User question: ${message}
 
-Provide a COMPREHENSIVE and DETAILED answer based ONLY on the context above. 
+Provide a COMPREHENSIVE and PRECISE answer based ONLY on the context above.
+- Synthesize the information: If the context provides different values or recommendations (e.g., different removal rates), EXPLAIN the context for each (e.g., "Standard cards remove 50%, while high-production cards can remove 80-90%").
 - Extract ALL relevant details, steps, and technical parameters.
-- If multiple methods or factors are mentioned, list ALL of them.
-- Do NOT use markdown formatting (no asterisks ** or __). Use plain text numbering (1., 2.) and indentation for structure.`
+- Do NOT use markdown formatting (no asterisks ** or __). Use plain text numbering and indentation.`
 
         // Generate response using LLM with enhanced privacy system prompt
         const aiResponse = await generateChatResponse(prompt, {
@@ -83,6 +83,7 @@ Provide a COMPREHENSIVE and DETAILED answer based ONLY on the context above.
 
 CONTENT RULES:
 - Answer ONLY based on the provided context
+- Contextualize Data: If you find conflicting numbers (e.g., removal efficency 50% vs 90%), DO NOT just list them. Explain the scenario for each (e.g., card type, raw material, process stage).
 - Be EXHAUSTIVE: If the context has 5 points, list all 5. Do not summarize or skip details.
 - Include specific technical values, machine settings, and parameters if present.
 - If the context lacks information to answer fully, explicitly state what is missing.
@@ -90,7 +91,7 @@ CONTENT RULES:
 FORMATTING RULES (CRITICAL):
 - DO NOT use markdown bold (**text**) or italics (*text*).
 - Use plain text for headers (e.g., "Step 1: Process Name" instead of "**Step 1: Process Name**").
-- Use clean numbering and lists.
+- Use clean numbering (1., 2.) and indented lists (-).
 
 PRIVACY RULES:
 - NEVER mention document names, filenames, or sources
