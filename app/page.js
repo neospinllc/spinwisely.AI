@@ -183,13 +183,13 @@ export default function Home() {
                             </span>
                         </div>
 
-                        <h1 className="text-5xl md:text-6xl font-bold leading-tight">
-                            Fiber to yarn
-                            <div className="text-3xl md:text-4xl mt-2">
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight">
+                            <span className="block mb-2">Fiber to yarn</span>
+                            <div className="text-2xl sm:text-3xl md:text-4xl mt-2 mb-4 font-semibold text-gray-700 dark:text-gray-200">
                                 Technology and Process
                             </div>
                             <div className="mt-6">
-                                <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+                                <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent block pb-2">
                                     Your AI Assistant
                                 </span>
                             </div>
