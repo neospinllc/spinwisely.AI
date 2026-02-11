@@ -42,7 +42,7 @@ export default function Home() {
                         </div>
 
                         <h1 className="text-5xl md:text-6xl font-bold leading-tight">
-                            Your Documents,
+                            Industry Credible Documents,
                             <br />
                             <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
                                 Your AI Assistant
@@ -50,7 +50,7 @@ export default function Home() {
                         </h1>
 
                         <p className="text-xl text-gray-600 dark:text-gray-300 max-w-lg">
-                            Get instant answers from your uploaded documents. Secure, private, and powered by advanced AI technology.
+                            Get instant answers from curated, industry-credible documents. Secure, private, and powered by advanced AI technology.
                         </p>
 
                         <div className="flex flex-wrap gap-4 justify-center md:justify-start">
