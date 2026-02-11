@@ -60,8 +60,8 @@ export default function Home() {
             <header className="absolute top-0 left-0 right-0 p-6">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <MessageCircle className="w-8 h-8 text-primary-600" />
-                        <span className="text-4xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+                        <MessageCircle className="w-10 h-10 text-primary-600" />
+                        <span className="text-5xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
                             SpinWisely AI
                         </span>
                     </div>
@@ -81,8 +81,8 @@ export default function Home() {
                         </div>
 
                         <h1 className="text-5xl md:text-6xl font-bold leading-tight">
-                            Fiber to yarn process,
-                            <div className="mt-4">
+                            Fiber to yarn Technology and process
+                            <div className="mt-6">
                                 <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
                                     Your AI Assistant
                                 </span>
