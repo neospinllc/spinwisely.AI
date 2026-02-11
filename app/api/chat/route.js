@@ -38,7 +38,7 @@ export async function POST(request) {
         // Search for relevant document chunks in the vector database
         console.log('🔍 Searching Pinecone with embedding of length:', embeddingResult.embedding.length)
         const searchResult = await queryVectors(embeddingResult.embedding, {
-            topK: 15,
+            topK: 35, // Increased to 35 (approx 8k tokens) - max for GPT-3.5 context limit
             includeMetadata: true,
         })
 
@@ -73,9 +73,9 @@ ${context}
 User question: ${message}
 
 Provide a COMPREHENSIVE and PRECISE answer based ONLY on the context above.
-- Synthesize the information: If the context provides different values or recommendations (e.g., different removal rates), EXPLAIN the context for each (e.g., "Standard cards remove 50%, while high-production cards can remove 80-90%").
+- Synthesize the information: If the context provides different values (e.g., 50% vs 90%), EXPLAIN the specific scenario for each (e.g., machine type, material).
 - Extract ALL relevant details, steps, and technical parameters.
-- Do NOT use markdown formatting (no asterisks ** or __). Use plain text numbering and indentation.`
+- STRICTLY PLAIN TEXT: Do NOT use markdown (**bold**, *italics*, # headers). Use plain text numbering (1., 2.) and indentation.`
 
         // Generate response using LLM with enhanced privacy system prompt
         const aiResponse = await generateChatResponse(prompt, {
@@ -83,20 +83,20 @@ Provide a COMPREHENSIVE and PRECISE answer based ONLY on the context above.
 
 CONTENT RULES:
 - Answer ONLY based on the provided context
-- Contextualize Data: If you find conflicting numbers (e.g., removal efficency 50% vs 90%), DO NOT just list them. Explain the scenario for each (e.g., card type, raw material, process stage).
-- Be EXHAUSTIVE: If the context has 5 points, list all 5. Do not summarize or skip details.
-- Include specific technical values, machine settings, and parameters if present.
-- If the context lacks information to answer fully, explicitly state what is missing.
+- Contextualize Data: If numbers conflict, explain WHY (e.g., "Standard card: 50%, High-Production card: 90%").
+- Be EXHAUSTIVE: List all relevant details found in the 35 chunks of context.
 
-FORMATTING RULES (CRITICAL):
-- DO NOT use markdown bold (**text**) or italics (*text*).
-- Use plain text for headers (e.g., "Step 1: Process Name" instead of "**Step 1: Process Name**").
-- Use clean numbering (1., 2.) and indented lists (-).
+FORMATTING RULES (STRICT):
+- OUTPUT MUST BE PLAIN TEXT ONLY.
+- NO MARKDOWN **bold**.
+- NO MARKDOWN # headers.
+- NO MARKDOWN *italics*.
+- Use "Step 1:" or "1." for structure.
+- Use indentation for sub-points.
 
 PRIVACY RULES:
-- NEVER mention document names, filenames, or sources
-- NEVER say "according to the document"
-- Present information naturally as your own knowledge`,
+- NEVER mention document names, filenames, or sources.
+- Present information naturally as your own knowledge.`,
         })
 
         if (!aiResponse.success) {
