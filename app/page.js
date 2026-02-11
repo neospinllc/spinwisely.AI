@@ -12,6 +12,7 @@ export default function Home() {
     const [isLogin, setIsLogin] = useState(true)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
     const [name, setName] = useState('')
     const [error, setError] = useState('')
     const [submitting, setSubmitting] = useState(false)
@@ -111,22 +112,36 @@ export default function Home() {
         setSubmitting(true)
 
         try {
-            let result
-            if (isLogin) {
-                result = await signIn(email, password)
-                // Check will happen in useEffect
-            } else {
-                // For signup, show T&C modal first
+            if (!isLogin) {
+                // Validate password confirmation
+                if (password !== confirmPassword) {
+                    setError('Passwords do not match')
+                    setSubmitting(false)
+                    return
+                }
+
+                // For signup, show terms modal first
                 setPendingSignupData({ email, password, name })
                 setShowTermsModal(true)
                 setSubmitting(false)
                 return
             }
 
-            if (!result.success) {
+            // For login: just sign in
+            const result = await signIn(email, password)
+
+            if (result.success) {
+                // Check if user has accepted terms
+                setCheckingTerms(true)
+                if (!hasAcceptedTerms()) {
+                    setShowTermsModal(true)
+                } else {
+                    router.push('/chat')
+                }
+                setCheckingTerms(false)
+            } else {
                 setError(result.error)
             }
-            // Success - useEffect will handle redirect/terms check
         } catch (err) {
             setError(err.message)
         } finally {
@@ -263,21 +278,35 @@ export default function Home() {
                                         placeholder="••••••••"
                                         required
                                     />
+                                    {isLogin && (
+                                        <div className="flex justify-end mt-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowForgotPassword(true)}
+                                                className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
+                                            >
+                                                Forgot Password?
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
 
-                                {/* Forgot Password Link - Only show in login mode */}
-                                {isLogin && (
-                                    <div className="text-right">
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowForgotPassword(true)}
-                                            className="text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
-                                        >
-                                            Forgot Password?
-                                        </button>
+                                {!isLogin && (
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            <Lock className="inline w-4 h-4 mr-1" />
+                                            Confirm Password
+                                        </label>
+                                        <input
+                                            type="password"
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                                            placeholder="••••••••"
+                                            required
+                                        />
                                     </div>
                                 )}
-
                                 <button
                                     type="submit"
                                     disabled={submitting}

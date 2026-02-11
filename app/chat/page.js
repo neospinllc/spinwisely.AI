@@ -1,9 +1,16 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Send, MessageCircle, Loader2, LogOut, User } from 'lucide-react'
+import { Send, MessageCircle, Loader2, LogOut, User, Mail, AlertCircle } from 'lucide-react'
+import { useAuth } from '@/lib/auth-context'
+import { useRouter } from 'next/navigation'
 
 export default function ChatPage() {
+    const router = useRouter()
+    const { user, userData, signOut, loading } = useAuth()
+    const [showVerificationMessage, setShowVerificationMessage] = useState(false)
+    const [resendingVerification, setResending Verification] = useState(false)
+
     const [messages, setMessages] = useState([
         {
             role: 'assistant',
@@ -14,6 +21,31 @@ export default function ChatPage() {
     const [input, setInput] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const messagesEndRef = useRef(null)
+
+    // Check email verification
+    useEffect(() => {
+        if (user && !loading) {
+            if (!user.emailVerified) {
+                setShowVerificationMessage(true)
+            }
+        }
+    }, [user, loading])
+
+    const resendVerificationEmail = async () => {
+        if (!user) return
+
+        setResendingVerification(true)
+        try {
+            const { sendEmailVerification } = await import('firebase/auth')
+            await sendEmailVerification(user)
+            alert('Verification email sent! Please check your inbox.')
+        } catch (error) {
+            console.error('Error sending verification:', error)
+            alert('Failed to send verification email. Please try again later.')
+        } finally {
+            setResendingVerification(false)
+        }
+    }
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -27,6 +59,12 @@ export default function ChatPage() {
         e.preventDefault()
         if (!input.trim() || isLoading) return
 
+        // Block if email not verified
+        if (!user?.emailVerified) {
+            alert('Please verify your email before using the chat.')
+            return
+        }
+
         const userMessage = {
             role: 'user',
             content: input,
@@ -38,7 +76,6 @@ export default function ChatPage() {
         setIsLoading(true)
 
         try {
-            // TODO: Replace with actual API call
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -67,13 +104,36 @@ export default function ChatPage() {
         }
     }
 
-    const handleLogout = () => {
-        // TODO: Implement logout
-        window.location.href = '/'
+    const handleLogout = async () => {
+        await signOut()
+        router.push('/')
     }
+
+    // Get display name
+    const displayName = userData?.name || user?.email || 'User'
+    const displayInitial = displayName.charAt(0).toUpperCase()
 
     return (
         <div className="flex flex-col h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+            {/* Email Verification Banner */}
+            {showVerificationMessage && user && !user.emailVerified && (
+                <div className="bg-yellow-500 text-white px-6 py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <AlertCircle className="w-5 h-5" />
+                        <span className="text-sm font-medium">
+                            Please verify your email address to use the chat. Check your inbox for the verification link.
+                        </span>
+                    </div>
+                    <button
+                        onClick={resendVerificationEmail}
+                        disabled={resendingVerification}
+                        className="px-4 py-1.5 bg-white text-yellow-600 rounded-lg text-sm font-medium hover:bg-yellow-50 transition-colors disabled:opacity-50"
+                    >
+                        {resendingVerification ? 'Sending...' : 'Resend Email'}
+                    </button>
+                </div>
+            )}
+
             {/* Header */}
             <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-3">
@@ -90,8 +150,10 @@ export default function ChatPage() {
                         onClick={handleLogout}
                         className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                     >
-                        <User className="w-4 h-4" />
-                        <span className="hidden md:inline">Guest User</span>
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary-600 to-accent-600 flex items-center justify-center text-white font-semibold">
+                            {displayInitial}
+                        </div>
+                        <span className="hidden md:inline">{displayName}</span>
                         <LogOut className="w-4 h-4" />
                     </button>
                 </div>
@@ -108,8 +170,8 @@ export default function ChatPage() {
                         >
                             <div
                                 className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${message.role === 'user'
-                                        ? 'bg-gradient-to-r from-primary-600 to-accent-600'
-                                        : 'bg-gray-200 dark:bg-gray-700'
+                                    ? 'bg-gradient-to-r from-primary-600 to-accent-600'
+                                    : 'bg-gray-200 dark:bg-gray-700'
                                     }`}
                             >
                                 {message.role === 'user' ? (
@@ -124,8 +186,8 @@ export default function ChatPage() {
                             >
                                 <div
                                     className={`inline-block px-6 py-4 rounded-2xl shadow-sm ${message.role === 'user'
-                                            ? 'bg-gradient-to-r from-primary-600 to-accent-600 text-white'
-                                            : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100'
+                                        ? 'bg-gradient-to-r from-primary-600 to-accent-600 text-white'
+                                        : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100'
                                         }`}
                                 >
                                     <p className="whitespace-pre-wrap break-words">{message.content}</p>
