@@ -158,13 +158,13 @@ export default function Home() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col">
             {/* Header */}
-            <header className="absolute top-0 left-0 right-0 p-6">
+            <header className="w-full p-4 md:p-6 z-10">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-2 md:ml-12">
-                        <MessageCircle className="w-10 h-10 text-primary-600" />
-                        <span className="text-5xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+                        <MessageCircle className="w-8 h-8 md:w-10 md:h-10 text-primary-600 flex-shrink-0" />
+                        <span className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent truncate">
                             SpinWisely AI
                         </span>
                     </div>
@@ -172,24 +172,24 @@ export default function Home() {
             </header>
 
             {/* Main Content */}
-            <main className="flex min-h-screen items-center justify-center p-4">
+            <main className="flex-1 flex items-center justify-center p-4 -mt-10 md:mt-0">
                 <div className="w-full max-w-6xl grid md:grid-cols-2 gap-8 items-center">
                     {/* Left Side - Hero */}
-                    <div className="text-center md:text-left space-y-6 animate-fade-in md:ml-12">
-                        <div className="flex items-center gap-2 justify-center md:justify-start mb-4">
+                    <div className="text-center md:text-left space-y-6 animate-fade-in md:ml-12 pt-4 md:pt-0">
+                        <div className="flex items-center gap-2 justify-center md:justify-start mb-2">
                             <Sparkles className="w-5 h-5 text-accent-500" />
                             <span className="text-xs font-semibold text-accent-600 uppercase tracking-wider">
                                 AI-Powered Knowledge Base
                             </span>
                         </div>
 
-                        <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold leading-tight">
-                            <span className="block mb-3">Fiber to yarn</span>
-                            <div className="text-xl sm:text-3xl md:text-4xl mt-2 mb-6 font-semibold text-gray-700 dark:text-gray-200">
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight">
+                            <span className="block mb-2">Fiber to yarn</span>
+                            <div className="text-2xl sm:text-3xl md:text-4xl mt-1 mb-4 font-semibold text-gray-700 dark:text-gray-200">
                                 Technology and Process
                             </div>
                             <div className="mt-4">
-                                <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent block pb-2 text-2xl sm:text-4xl">
+                                <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent block pb-2 text-3xl sm:text-4xl">
                                     Your AI Assistant
                                 </span>
                             </div>
