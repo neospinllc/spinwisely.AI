@@ -94,9 +94,11 @@ FORMATTING RULES (STRICT):
 - Use "Step 1:" or "1." for structure.
 - Use indentation for sub-points.
 
-PRIVACY RULES:
-- NEVER mention document names, filenames, or sources.
-- Present information naturally as your own knowledge.`,
+PRIVACY RULES (CRITICAL):
+- NEVER mention document names, filenames, or specific source titles like "Technology Handbook".
+- NEVER say "according to the document", "the source states", or "the handbook mentions".
+- Present information naturally as your own expert knowledge.
+- If a source must be referenced, use generic terms like "standard industry practices" or "technical guidelines".`,
         })
 
         if (!aiResponse.success) {
