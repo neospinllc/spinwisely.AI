@@ -4,23 +4,73 @@ import { useState, useEffect } from 'react'
 import { MessageCircle, Lock, Mail, Sparkles, Loader2 } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 import { useRouter } from 'next/navigation'
+import TermsModal from './components/TermsModal'
 
 export default function Home() {
     const router = useRouter()
-    const { user, loading, signIn, signUp } = useAuth()
+    const { user, loading, signIn, signUp, userData, hasAcceptedTerms, acceptTerms } = useAuth()
     const [isLogin, setIsLogin] = useState(true)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [name, setName] = useState('')
     const [error, setError] = useState('')
     const [submitting, setSubmitting] = useState(false)
+    const [showTermsModal, setShowTermsModal] = useState(false)
+    const [termsAccepted, setTermsAccepted] = useState(false)
+    const [pendingSignupData, setPendingSignupData] = useState(null)
+    const [checkingTerms, setCheckingTerms] = useState(false)
 
-    // Redirect if already logged in
+    // Redirect if already logged in AND has accepted terms
     useEffect(() => {
-        if (user && !loading) {
-            router.push('/chat')
+        if (user && !loading && userData) {
+            if (hasAcceptedTerms()) {
+                router.push('/chat')
+            } else {
+                // User logged in but hasn't accepted terms
+                setShowTermsModal(true)
+            }
         }
-    }, [user, loading, router])
+    }, [user, loading, userData, hasAcceptedTerms, router])
+
+    const handleTermsAccept = async () => {
+        setCheckingTerms(true)
+        setTermsAccepted(true)
+        setShowTermsModal(false)
+
+        // If user is logged in but hasn't accepted terms
+        if (user && !hasAcceptedTerms()) {
+            const result = await acceptTerms()
+            if (result.success) {
+                router.push('/chat')
+            } else {
+                setError('Failed to save terms acceptance')
+            }
+            setCheckingTerms(false)
+            return
+        }
+
+        // If this is during signup
+        if (pendingSignupData) {
+            const { email, password, name } = pendingSignupData
+            const result = await signUp(email, password, name, true)
+            if (!result.success) {
+                setError(result.error)
+            }
+            setPendingSignupData(null)
+            setCheckingTerms(false)
+        }
+    }
+
+    const handleTermsDecline = () => {
+        setShowTermsModal(false)
+        setTermsAccepted(false)
+        setPendingSignupData(null)
+
+        // If user declined after logging in, sign them out
+        if (user) {
+            router.push('/')
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -31,14 +81,19 @@ export default function Home() {
             let result
             if (isLogin) {
                 result = await signIn(email, password)
+                // Check will happen in useEffect
             } else {
-                result = await signUp(email, password, name)
+                // For signup, show T&C modal first
+                setPendingSignupData({ email, password, name })
+                setShowTermsModal(true)
+                setSubmitting(false)
+                return
             }
 
             if (!result.success) {
                 setError(result.error)
             }
-            // Success - useEffect will redirect
+            // Success - useEffect will handle redirect/terms check
         } catch (err) {
             setError(err.message)
         } finally {
@@ -199,6 +254,13 @@ export default function Home() {
                     </div>
                 </div>
             </main>
+
+            {/* Terms & Conditions Modal */}
+            <TermsModal
+                isOpen={showTermsModal}
+                onAccept={handleTermsAccept}
+                onDecline={handleTermsDecline}
+            />
         </div>
     )
 }
