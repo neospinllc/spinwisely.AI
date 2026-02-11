@@ -72,7 +72,7 @@ export default function Home() {
             <main className="flex min-h-screen items-center justify-center p-4">
                 <div className="w-full max-w-6xl grid md:grid-cols-2 gap-8 items-center">
                     {/* Left Side - Hero */}
-                    <div className="text-center md:text-left space-y-6 animate-fade-in">
+                    <div className="text-center md:text-left space-y-6 animate-fade-in md:ml-24">
                         <div className="flex items-center gap-2 justify-center md:justify-start">
                             <Sparkles className="w-6 h-6 text-accent-500" />
                             <span className="text-sm font-semibold text-accent-600 uppercase tracking-wider">
