@@ -19,6 +19,9 @@ export default function Home() {
     const [termsAccepted, setTermsAccepted] = useState(false)
     const [pendingSignupData, setPendingSignupData] = useState(null)
     const [checkingTerms, setCheckingTerms] = useState(false)
+    const [showForgotPassword, setShowForgotPassword] = useState(false)
+    const [forgotPasswordEmail, setForgotPasswordEmail] = useState('')
+    const [resetEmailSent, setResetEmailSent] = useState(false)
 
     // Redirect if already logged in AND has accepted terms
     useEffect(() => {
@@ -31,6 +34,36 @@ export default function Home() {
             }
         }
     }, [user, loading, userData, hasAcceptedTerms, router])
+
+    const handleForgotPassword = async () => {
+        if (!forgotPasswordEmail || !forgotPasswordEmail.includes('@')) {
+            setError('Please enter a valid email address')
+            return
+        }
+
+        setSubmitting(true)
+        setError('')
+
+        try {
+            const { sendPasswordResetEmail } = await import('firebase/auth')
+            const { auth } = await import('@/lib/firebase')
+
+            await sendPasswordResetEmail(auth, forgotPasswordEmail)
+            setResetEmailSent(true)
+            setError('')
+        } catch (err) {
+            setError(err.message || 'Failed to send password reset email')
+        } finally {
+            setSubmitting(false)
+        }
+    }
+
+    const closeForgotPassword = () => {
+        setShowForgotPassword(false)
+        setForgotPasswordEmail('')
+        setResetEmailSent(false)
+        setError('')
+    }
 
     const handleTermsAccept = async () => {
         setCheckingTerms(true)
@@ -232,6 +265,19 @@ export default function Home() {
                                     />
                                 </div>
 
+                                {/* Forgot Password Link - Only show in login mode */}
+                                {isLogin && (
+                                    <div className="text-right">
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowForgotPassword(true)}
+                                            className="text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+                                        >
+                                            Forgot Password?
+                                        </button>
+                                    </div>
+                                )}
+
                                 <button
                                     type="submit"
                                     disabled={submitting}
@@ -254,6 +300,90 @@ export default function Home() {
                     </div>
                 </div>
             </main>
+
+            {/* Forgot Password Modal */}
+            {showForgotPassword && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+                    <div className="relative w-full max-w-md mx-4 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6">
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                            Reset Password
+                        </h2>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                            {resetEmailSent
+                                ? "Check your email for password reset instructions."
+                                : "Enter your email address and we'll send you a link to reset your password."
+                            }
+                        </p>
+
+                        {!resetEmailSent ? (
+                            <>
+                                <div className="mb-6">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        <Mail className="w-4 h-4 inline mr-2" />
+                                        Email Address
+                                    </label>
+                                    <input
+                                        type="email"
+                                        value={forgotPasswordEmail}
+                                        onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                                        placeholder="you@example.com"
+                                        autoFocus
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                handleForgotPassword()
+                                            }
+                                        }}
+                                    />
+                                </div>
+
+                                {error && (
+                                    <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm">
+                                        {error}
+                                    </div>
+                                )}
+
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={closeForgotPassword}
+                                        className="flex-1 px-4 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={handleForgotPassword}
+                                        disabled={submitting}
+                                        className="flex-1 px-4 py-3 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-lg font-medium hover:from-primary-700 hover:to-accent-700 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                    >
+                                        {submitting ? (
+                                            <>
+                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                                Sending...
+                                            </>
+                                        ) : (
+                                            'Send Reset Link'
+                                        )}
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="space-y-4">
+                                <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                                    <p className="text-green-800 dark:text-green-300 text-sm">
+                                        ✓ Password reset email sent to <strong>{forgotPasswordEmail}</strong>
+                                    </p>
+                                </div>
+                                <button
+                                    onClick={closeForgotPassword}
+                                    className="w-full px-4 py-3 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-lg font-medium hover:from-primary-700 hover:to-accent-700 transition-all shadow-lg"
+                                >
+                                    Back to Login
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
 
             {/* Terms & Conditions Modal */}
             <TermsModal
