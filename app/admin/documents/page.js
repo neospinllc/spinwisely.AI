@@ -19,8 +19,11 @@ export default function DocumentManagement() {
                 if (response.ok) {
                     const data = await response.json()
                     setDocuments(data.documents.map(doc => ({
-                        ...doc,
-                        uploadedAt: new Date(doc.uploadedAt),
+                        id: doc.id,
+                        name: doc.filename, // Map filename to name
+                        size: doc.size,
+                        chunks: doc.chunksCount, // Map chunksCount to chunks
+                        uploadedAt: new Date(doc.uploadedAt.seconds * 1000), // Convert Firestore Timestamp
                     })))
                 }
             } catch (error) {
