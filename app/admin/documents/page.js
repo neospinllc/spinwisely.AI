@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Upload, FileText, Trash2, Loader2, Check, X, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
@@ -8,7 +8,29 @@ export default function DocumentManagement() {
     const [documents, setDocuments] = useState([])
     const [uploading, setUploading] = useState(false)
     const [uploadProgress, setUploadProgress] = useState({})
+    const [loading, setLoading] = useState(true)
     const fileInputRef = useRef(null)
+
+    // Fetch documents on mount
+    useEffect(() => {
+        async function fetchDocuments() {
+            try {
+                const response = await fetch('/api/documents')
+                if (response.ok) {
+                    const data = await response.json()
+                    setDocuments(data.documents.map(doc => ({
+                        ...doc,
+                        uploadedAt: new Date(doc.uploadedAt),
+                    })))
+                }
+            } catch (error) {
+                console.error('Error fetching documents:', error)
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchDocuments()
+    }, [])
 
     const handleFileSelect = async (e) => {
         const files = Array.from(e.target.files)
@@ -175,7 +197,12 @@ export default function DocumentManagement() {
                         </h3>
                     </div>
 
-                    {documents.length === 0 ? (
+                    {loading ? (
+                        <div className="p-12 text-center">
+                            <Loader2 className="w-12 h-12 text-primary-600 mx-auto mb-4 animate-spin" />
+                            <p className="text-gray-600 dark:text-gray-400">Loading documents...</p>
+                        </div>
+                    ) : documents.length === 0 ? (
                         <div className="p-12 text-center">
                             <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                             <p className="text-gray-600 dark:text-gray-400">No documents uploaded yet</p>
