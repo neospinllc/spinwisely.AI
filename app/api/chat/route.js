@@ -38,7 +38,7 @@ export async function POST(request) {
         // Search for relevant document chunks in the vector database
         console.log('🔍 Searching Pinecone with embedding of length:', embeddingResult.embedding.length)
         const searchResult = await queryVectors(embeddingResult.embedding, {
-            topK: 10,
+            topK: 15,
             includeMetadata: true,
         })
 
@@ -72,7 +72,10 @@ ${context}
 
 User question: ${message}
 
-Provide a detailed, specific answer based ONLY on the context above. Include concrete details, steps, techniques, or recommendations mentioned in the context.`
+Provide a COMPREHENSIVE and DETAILED answer based ONLY on the context above. 
+- Extract ALL relevant details, steps, and technical parameters.
+- If multiple methods or factors are mentioned, list ALL of them.
+- Do NOT use markdown formatting (no asterisks ** or __). Use plain text numbering (1., 2.) and indentation for structure.`
 
         // Generate response using LLM with enhanced privacy system prompt
         const aiResponse = await generateChatResponse(prompt, {
@@ -80,21 +83,19 @@ Provide a detailed, specific answer based ONLY on the context above. Include con
 
 CONTENT RULES:
 - Answer ONLY based on the provided context
-- Include specific details, techniques, parameters, and steps from the context
-- If the context mentions specific methods, equipment, or processes, explain them
-- Be thorough and technical when the context provides technical information
-- If the context lacks information to answer fully, say "The available information covers [what you know] but doesn't include [what's missing]"
+- Be EXHAUSTIVE: If the context has 5 points, list all 5. Do not summarize or skip details.
+- Include specific technical values, machine settings, and parameters if present.
+- If the context lacks information to answer fully, explicitly state what is missing.
+
+FORMATTING RULES (CRITICAL):
+- DO NOT use markdown bold (**text**) or italics (*text*).
+- Use plain text for headers (e.g., "Step 1: Process Name" instead of "**Step 1: Process Name**").
+- Use clean numbering and lists.
 
 PRIVACY RULES:
 - NEVER mention document names, filenames, or sources
-- NEVER say "according to the document" or "the source states"
-- Present information naturally as your own knowledge
-
-RESPONSE STYLE:
-- Be specific and detailed, not generic
-- Use technical terms when appropriate
-- Organize information clearly (use lists or steps when helpful)
-- Rephrase naturally but preserve important details and specifics`,
+- NEVER say "according to the document"
+- Present information naturally as your own knowledge`,
         })
 
         if (!aiResponse.success) {
