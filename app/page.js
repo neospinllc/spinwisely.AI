@@ -176,20 +176,20 @@ export default function Home() {
                 <div className="w-full max-w-6xl grid md:grid-cols-2 gap-8 items-center">
                     {/* Left Side - Hero */}
                     <div className="text-center md:text-left space-y-6 animate-fade-in md:ml-12">
-                        <div className="flex items-center gap-2 justify-center md:justify-start">
-                            <Sparkles className="w-6 h-6 text-accent-500" />
-                            <span className="text-sm font-semibold text-accent-600 uppercase tracking-wider">
+                        <div className="flex items-center gap-2 justify-center md:justify-start mb-4">
+                            <Sparkles className="w-5 h-5 text-accent-500" />
+                            <span className="text-xs font-semibold text-accent-600 uppercase tracking-wider">
                                 AI-Powered Knowledge Base
                             </span>
                         </div>
 
-                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight">
-                            <span className="block mb-2">Fiber to yarn</span>
-                            <div className="text-2xl sm:text-3xl md:text-4xl mt-2 mb-4 font-semibold text-gray-700 dark:text-gray-200">
+                        <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold leading-tight">
+                            <span className="block mb-3">Fiber to yarn</span>
+                            <div className="text-xl sm:text-3xl md:text-4xl mt-2 mb-6 font-semibold text-gray-700 dark:text-gray-200">
                                 Technology and Process
                             </div>
-                            <div className="mt-6">
-                                <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent block pb-2">
+                            <div className="mt-4">
+                                <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent block pb-2 text-2xl sm:text-4xl">
                                     Your AI Assistant
                                 </span>
                             </div>
