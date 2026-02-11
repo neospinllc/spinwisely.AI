@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Send, MessageCircle, Loader2, LogOut, User, Mail, AlertCircle } from 'lucide-react'
+import { Send, MessageCircle, Loader2, LogOut, User, Mail, AlertCircle, Settings } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 import { useRouter } from 'next/navigation'
 
@@ -146,6 +146,17 @@ export default function ChatPage() {
                     </div>
                 </div>
                 <div className="flex items-center gap-4">
+                    {/* Admin Console Button - Only visible for admins */}
+                    {userData?.isAdmin && (
+                        <button
+                            onClick={() => router.push('/admin')}
+                            className="flex items-center gap-2 px-4 py-2 text-sm bg-primary-600 text-white hover:bg-primary-700 rounded-lg transition-colors"
+                        >
+                            <Settings className="w-4 h-4" />
+                            <span className="hidden md:inline">Admin Console</span>
+                        </button>
+                    )}
+
                     <button
                         onClick={handleLogout}
                         className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
