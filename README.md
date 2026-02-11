@@ -1,125 +1,147 @@
-# SpinWisely AI - Document-Based Chatbot
+# SpinWisely AI - Industry Knowledge Chatbot 🤖
 
-An AI-powered chatbot that answers questions exclusively from your uploaded documents, with user authentication, admin controls, and activity tracking.
+An AI-powered chatbot that answers questions exclusively from admin-curated, industry-credible documents. Built with Next.js, Firebase, and state-of-the-art AI technologies.
 
-## Features
+## ✨ Features
 
-- 🤖 **AI Chat**: Answers questions only from your uploaded documents
-- 📄 **Multi-Format Support**: PDF, Word, PowerPoint, Excel, and text files
-- 🔐 **Authentication**: Secure user login and registration
-- 👥 **User Management**: Admin dashboard to manage users and access
-- 📊 **Activity Logging**: Track who logged in and what they asked
-- 🔒 **Fine-Grained Permissions**: Control who can access which documents
-- 🌍 **Multi-Language**: Support for multiple languages
-- 📱 **Responsive Design**: Works on desktop and mobile devices
+### For Users:
+- ✅ **Real-time Chat Interface** - Beautiful, responsive chat UI
+- ✅ **Industry-Credible Answers** - Responses based solely on uploaded documents
+- ✅ **Secure Authentication** - Email/password login with Firebase
+- ✅ **No Source Leakage** - Answers don't reveal which documents were used
 
-## Tech Stack
+### For Admins:
+- ✅ **Document Management** - Upload and manage PDF, Word, Excel, text files
+- ✅ **Automatic Processing** - Documents are parsed, chunked, and embedded automatically
+- ✅ **User Management** - View and manage user accounts
+- ✅ **Activity Logs** - Track user questions and system usage
+- ✅ **Dashboard Analytics** - Overview of documents, users, and queries
 
-- **Frontend**: Next.js 14 with React
-- **Styling**: Tailwind CSS
-- **Authentication**: Firebase Authentication
+## 🏗️ Tech Stack
+
+- **Frontend**: Next.js 15, React, Tailwind CSS
+- **Authentication**: Firebase Auth
 - **Database**: Firestore
-- **AI**: HuggingFace Inference API (Mistral-7B)
+- **Storage**: Firebase Storage
+- **AI/ML**: HuggingFace Inference API
 - **Vector Database**: Pinecone
-- **Hosting**: Cloudflare Pages
+- **Deployment**: Vercel (recommended) or Cloudflare Pages
 
-## Getting Started
+## 📁 Project Structure
+
+```
+spinwisely.AI/
+├── app/
+│   ├── page.js                    # Landing page with auth
+│   ├── chat/page.js               # User chat interface
+│   ├── admin/page.js              # Admin dashboard
+│   ├── admin/documents/page.js    # Document management
+│   └── api/
+│       ├── chat/route.js          # RAG chat endpoint
+│       └── documents/upload/route.js  # Document processing
+├── lib/
+│   ├── firebase.js                # Firebase config
+│   ├── firestore.js               # Firestore utilities
+│   ├── llm-client.js              # HuggingFace integration
+│   ├── vector-store.js            # Pinecone integration
+│   ├── document-parser.js         # Document parsing
+│   └── auth-context.js            # Auth provider
+├── SETUP.md                       # Setup instructions
+└── DEPLOYMENT.md                  # Deployment guide
+```
+
+## 🚀 Quick Start
 
 ### Prerequisites
-
 - Node.js 18+ and npm
 - Firebase account
-- HuggingFace account (free tier)
-- Pinecone account (free tier)
+- HuggingFace account  
+- Pinecone account
 
 ### Installation
 
 1. Clone the repository:
-\`\`\`bash
+```bash
 git clone https://github.com/neospinllc/spinwisely.AI.git
 cd spinwisely.AI
-\`\`\`
+```
 
 2. Install dependencies:
-\`\`\`bash
+```bash
 npm install
-\`\`\`
+```
 
-3. Copy the environment file and fill in your credentials:
-\`\`\`bash
+3. Set up environment variables:
+```bash
 cp .env.example .env
-\`\`\`
+```
 
-4. Set up Firebase:
-   - Create a new Firebase project at https://console.firebase.google.com
-   - Enable Authentication (Email/Password)
-   - Create a Firestore database
-   - Copy your config to `.env`
+4. Follow the detailed setup guide in `SETUP.md` to configure:
+   - Firebase (authentication, database, storage)
+   - HuggingFace API token
+   - Pinecone vector database
 
-5. Set up HuggingFace:
-   - Get a free API token at https://huggingface.co/settings/tokens
-   - Add it to `.env`
-
-6. Set up Pinecone:
-   - Create a free account at https://www.pinecone.io
-   - Create an index named `spinwisely-ai-docs`
-   - Copy your API key to `.env`
-
-7. Run the development server:
-\`\`\`bash
+5. Start the development server:
+```bash
 npm run dev
-\`\`\`
+```
 
-8. Open [http://localhost:3000](http://localhost:3000) in your browser
+6. Open [http://localhost:3000](http://localhost:3000)
 
-## Deployment
+## 📖 Documentation
 
-Deploy to Cloudflare Pages:
+- **[SETUP.md](./SETUP.md)** - Complete setup instructions for all services
+- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Deployment guide for Vercel or Cloudflare
 
-\`\`\`bash
-npm run pages:build
-npm run pages:deploy
-\`\`\`
+## 🎯 Usage
 
-## Project Structure
+### For Users:
+1. Sign up or log in at the landing page
+2. Start chatting with the AI about the available documents
+3. Ask specific questions to get accurate, document-based answers
 
-\`\`\`
-spinwisely.AI/
-├── app/                  # Next.js App Router pages
-│   ├── layout.js         # Root layout
-│   ├── page.js           # Landing/login page
-│   ├── chat/             # Chat interface
-│   └── admin/            # Admin dashboard
-├── components/           # React components
-│   ├── ChatInterface.jsx
-│   ├── DocumentUploader.jsx
-│   └── ...
-├── lib/                  # Utility functions
-│   ├── firebase.js       # Firebase config
-│   ├── rag-engine.js     # AI logic
-│   └── ...
-├── public/               # Static assets
-└── styles/               # Global styles
-\`\`\`
+### For Admins:
+1. Sign in with admin account
+2. Navigate to `/admin/documents` to upload new documents
+3. Supported formats: PDF, Word (.docx), Excel (.xlsx), Text, CSV, Markdown
+4. View dashboard at `/admin` for analytics and user management
 
-## Usage
+## 🔧 Configuration
 
-### For Users
-1. Register/login with your email
-2. Start chatting with the AI
-3. The AI will answer based on uploaded documents
+Create a `.env` file with the following variables:
 
-### For Admins
-1. Login with admin credentials
-2. Navigate to Admin Dashboard
-3. Upload documents
-4. Manage users and permissions
-5. View activity logs
+```env
+# Firebase
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
 
-## License
+# HuggingFace
+HUGGINGFACE_API_TOKEN=
 
-Proprietary - © 2026 NeoSpin LLC
+# Pinecone
+PINECONE_API_KEY=
+PINECONE_ENVIRONMENT=
+PINECONE_INDEX_NAME=spinwisely-ai-docs
+```
 
-## Support
+## 🚢 Deployment
 
-For support, email support@spinwisely.com
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+
+**Recommended:** Deploy to Vercel for zero-config deployment.
+
+## 📝 License
+
+This project is proprietary software. All rights reserved.
+
+## 🤝 Contributing
+
+This is a private project. Contact the repository owner for contribution guidelines.
+
+## 📧 Contact
+
+For questions or support, contact neospinllc
