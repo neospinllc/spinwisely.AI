@@ -36,12 +36,24 @@ export async function POST(request) {
         }
 
         // Search for relevant document chunks in the vector database
+        console.log('🔍 Searching Pinecone with embedding of length:', embeddingResult.embedding.length)
         const searchResult = await queryVectors(embeddingResult.embedding, {
             topK: 5,
             includeMetadata: true,
         })
 
+        console.log('📊 Pinecone search result:', {
+            success: searchResult.success,
+            matchCount: searchResult.matches?.length || 0,
+            error: searchResult.error
+        })
+
+        if (searchResult.matches && searchResult.matches.length > 0) {
+            console.log('✅ First match score:', searchResult.matches[0].score)
+        }
+
         if (!searchResult.success || searchResult.matches.length === 0) {
+            console.log('❌ No matches found in Pinecone')
             return NextResponse.json({
                 response: 'I don\'t have enough information in my knowledge base to answer that question. Please ask about topics covered in the available documents.',
             })
