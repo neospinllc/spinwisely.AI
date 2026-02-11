@@ -16,14 +16,13 @@ export default function AdminDashboard() {
     useEffect(() => {
         async function fetchStats() {
             try {
-                // Fetch documents count
-                const docsResponse = await fetch('/api/documents')
-                if (docsResponse.ok) {
-                    const docsData = await docsResponse.json()
-                    setStats(prev => ({
-                        ...prev,
-                        totalDocuments: docsData.count || 0,
-                    }))
+                // Fetch all stats from admin API
+                const statsResponse = await fetch('/api/admin/stats')
+                if (statsResponse.ok) {
+                    const statsData = await statsResponse.json()
+                    if (statsData.success) {
+                        setStats(statsData.stats)
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching stats:', error)
