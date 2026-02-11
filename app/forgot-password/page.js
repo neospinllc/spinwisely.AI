@@ -17,13 +17,36 @@ export default function ForgotPasswordPage() {
         setError('')
         setLoading(true)
 
+        console.log('=== PASSWORD RESET DEBUG ===')
+        console.log('Email:', email)
+        console.log('Firebase Auth:', auth)
+        console.log('Current User:', auth.currentUser)
+
         try {
+            console.log('Attempting to send password reset email...')
             await sendPasswordResetEmail(auth, email)
+            console.log('✅ Firebase sendPasswordResetEmail SUCCESS')
+            console.log('Email should be sent to:', email)
+            console.log('Check your spam/junk folder!')
             setSuccess(true)
-            console.log('Password reset email sent successfully to:', email)
+            setError('')
         } catch (err) {
-            console.error('Password reset error:', err)
-            setError(err.message || 'Failed to send password reset email')
+            console.error('❌ PASSWORD RESET ERROR:', err)
+            console.error('Error code:', err.code)
+            console.error('Error message:', err.message)
+
+            // Provide user-friendly error messages
+            let errorMessage = err.message
+
+            if (err.code === 'auth/user-not-found') {
+                errorMessage = 'No account found with this email address. Please check the email or create an account.'
+            } else if (err.code === 'auth/invalid-email') {
+                errorMessage = 'Invalid email address format.'
+            } else if (err.code === 'auth/too-many-requests') {
+                errorMessage = 'Too many requests. Please wait a few minutes and try again.'
+            }
+
+            setError(errorMessage)
         } finally {
             setLoading(false)
         }
