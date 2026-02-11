@@ -47,23 +47,38 @@ export async function POST(request) {
             })
         }
 
-        // Extract relevant context from search results
+        // Extract relevant context from search results (without metadata)
         const context = searchResult.matches
             .map((match) => match.metadata?.text || '')
             .filter(text => text.length > 0)
             .join('\n\n')
 
-        // Build the prompt with context
-        const prompt = `Context from documents:
+        // Build the prompt with context (no source attribution)
+        const prompt = `Context information:
 ${context}
 
 User question: ${message}
 
-Please provide a helpful, accurate answer based ONLY on the context provided above. If the answer is not in the context, say so clearly.`
+Based on the context above, provide a helpful answer. IMPORTANT: Rephrase and simplify the information - do not copy text verbatim from the context.`
 
-        // Generate response using LLM
+        // Generate response using LLM with enhanced privacy system prompt
         const aiResponse = await generateChatResponse(prompt, {
-            systemPrompt: 'You are a helpful AI assistant that answers questions based strictly on provided document context. Never make up information or use knowledge outside the given context. Be concise and accurate.',
+            systemPrompt: `You are a knowledgeable AI assistant. Follow these CRITICAL rules:
+
+PRIVACY & SECURITY:
+- NEVER mention document names, filenames, or sources
+- NEVER reveal how many documents are in the database
+- NEVER reference "the document says" or "according to the source"
+- NEVER copy text verbatim from the context
+
+RESPONSE STYLE:
+- Synthesize and rephrase information in your own words
+- Simplify complex information for clarity
+- Present information as your own knowledge
+- Be natural and conversational
+- If you don't know something from the context, say "I don't have information about that topic"
+
+Answer questions based strictly on the provided context, but always rephrase and simplify the information naturally.`,
         })
 
         if (!aiResponse.success) {
