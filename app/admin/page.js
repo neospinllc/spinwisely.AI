@@ -14,13 +14,22 @@ export default function AdminDashboard() {
     })
 
     useEffect(() => {
-        // TODO: Fetch real stats from API
-        setStats({
-            totalDocuments: 0,
-            totalUsers: 0,
-            totalQueries: 0,
-            activeUsers: 0,
-        })
+        async function fetchStats() {
+            try {
+                // Fetch documents count
+                const docsResponse = await fetch('/api/documents')
+                if (docsResponse.ok) {
+                    const docsData = await docsResponse.json()
+                    setStats(prev => ({
+                        ...prev,
+                        totalDocuments: docsData.count || 0,
+                    }))
+                }
+            } catch (error) {
+                console.error('Error fetching stats:', error)
+            }
+        }
+        fetchStats()
     }, [])
 
     return (
@@ -43,8 +52,8 @@ export default function AdminDashboard() {
                     <button
                         onClick={() => setActiveTab('overview')}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeTab === 'overview'
-                                ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400'
-                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                            ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                             }`}
                     >
                         <Activity className="w-5 h-5" />
@@ -63,8 +72,8 @@ export default function AdminDashboard() {
                     <button
                         onClick={() => setActiveTab('users')}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeTab === 'users'
-                                ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400'
-                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                            ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                             }`}
                     >
                         <Users className="w-5 h-5" />
@@ -74,8 +83,8 @@ export default function AdminDashboard() {
                     <button
                         onClick={() => setActiveTab('activity')}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeTab === 'activity'
-                                ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400'
-                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                            ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                             }`}
                     >
                         <Activity className="w-5 h-5" />
@@ -85,8 +94,8 @@ export default function AdminDashboard() {
                     <button
                         onClick={() => setActiveTab('settings')}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeTab === 'settings'
-                                ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400'
-                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                            ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                             }`}
                     >
                         <Settings className="w-5 h-5" />
