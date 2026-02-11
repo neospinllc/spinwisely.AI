@@ -82,10 +82,11 @@ export default function Home() {
 
                         <h1 className="text-5xl md:text-6xl font-bold leading-tight">
                             Fiber to yarn process,
-                            <br />
-                            <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
-                                Your AI Assistant
-                            </span>
+                            <div className="mt-4">
+                                <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+                                    Your AI Assistant
+                                </span>
+                            </div>
                         </h1>
 
                         <p className="text-xl text-gray-600 dark:text-gray-300 max-w-lg">
