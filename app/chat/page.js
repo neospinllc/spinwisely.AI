@@ -243,7 +243,7 @@ export default function ChatPage() {
                                         handleSubmit(e)
                                     }
                                 }}
-                                placeholder="Ask a question about the documents..."
+                                placeholder="Type your question on Fiber to yarn process..."
                                 rows={1}
                                 className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none resize-none"
                                 style={{ minHeight: '52px', maxHeight: '120px' }}
